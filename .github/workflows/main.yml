@@ -23,8 +23,8 @@ jobs:
         openshift_server_url: ${{ secrets.CRC_OPENSHIFT_URL }}
         parameters: '{"apitoken": "${{ secrets.CRC_TOKEN }}", "acceptUntrustedCerts": "true"}'
         cmd: |
-          oc import-image openshift/java --confirm
           oc project ${PROJECT}
+          oc import-image openshift/java --confirm          
     - name: Execute oc commands
       run: |
         hasBuilds=$(oc get bc -l app=spring-petclinic --no-headers)
