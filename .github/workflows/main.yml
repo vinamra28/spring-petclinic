@@ -27,6 +27,6 @@ jobs:
           oc import-image openshift/java --confirm          
     - name: Execute oc commands
       run: |
-        hasBuilds=$(oc get bc -l app=spring-petclinic --no-headers)
+        hasBuilds=$(oc get bc ${APPNAME} --no-headers)
         [[ -z $hasBuilds ]] && oc new-app ${GITHUB_WORKSPACE} --image-stream=java --name ${APP_NAME} || oc start-build ${APPNAME} --from-dir ${GITHUB_WORKSPACE}
         
