@@ -23,7 +23,7 @@ jobs:
         openshift_server_url: ${{ secrets.CRC_OPENSHIFT_URL }}
         parameters: '{"apitoken": "${{ secrets.CRC_TOKEN }}", "acceptUntrustedCerts": "true"}'
         cmd: |
-          oc import-image openshift/java
+          oc import-image openshift/java --confirm
           oc project ${PROJECT}
     - name: Execute oc commands
       run: |
