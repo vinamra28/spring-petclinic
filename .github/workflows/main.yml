@@ -28,9 +28,5 @@ jobs:
     - name: Execute oc commands
       run: |
         hasBuilds=$(oc get bc -l app=spring-petclinic --no-headers)
-        if [[ -z $hasBuilds ]] then
-          oc new-app ${GITHUB_WORKSPACE} --image-stream=java --name ${APP_NAME}
-        else
-          oc start-build ${APPNAME} --from-dir ${GITHUB_WORKSPACE} --follow
-        fi
+        [[ -z $hasBuilds ]] && oc new-app ${GITHUB_WORKSPACE} --image-stream=java --name ${APP_NAME} || oc start-build ${APPNAME} --from-dir ${GITHUB_WORKSPACE}
         
