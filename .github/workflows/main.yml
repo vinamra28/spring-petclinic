@@ -1,0 +1,36 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+on: [push]
+
+env:
+  PROJECT: demo-action
+  APP_NAME: myapp
+
+jobs:
+  build:
+    name: Setup and Deploy
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: OpenShift Action
+      uses: redhat-developer/openshift-actions@v2.1.0
+      with:
+        version: '4.3'
+        openshift_server_url: ${{ secrets.CRC_OPENSHIFT_URL }}
+        parameters: '{"apitoken": "${{ secrets.CRC_TOKEN }}", "acceptUntrustedCerts": "true"}'
+        cmd: |
+          oc import-image openshift/java
+          oc project ${PROJECT}
+    - name: Execute oc commands
+      run: |
+        hasBuilds=$(oc get bc -l app=spring-petclinic --no-headers)
+        if [[ -z $hasBuilds ]] then
+          oc new-app ${GITHUB_WORKSPACE} --image-stream=java --name ${APP_NAME}
+        else
+          oc start-build ${APPNAME} --from-dir ${GITHUB_WORKSPACE} --follow
+        fi
+        
