@@ -27,7 +27,6 @@ jobs:
         new-image-name: test2
         base-image: docker.io/fabric8/java-alpine-openjdk11-jre
         content: target/spring-petclinic-2.3.0.BUILD-SNAPSHOT.jar
-        port: 8080
         entrypoint: java    
     - name: Check image created
       run: |
