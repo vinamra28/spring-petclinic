@@ -10,23 +10,26 @@ env:
 jobs:
   build:
     name: Setup and Deploy
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: OpenShift Action
-      uses: redhat-developer/openshift-actions@v2.1.0
-      with:
-        version: '4.3'
-        openshift_server_url: ${{ secrets.CRC_OPENSHIFT_URL }}
-        parameters: '{"apitoken": "${{ secrets.CRC_TOKEN }}", "acceptUntrustedCerts": "true"}'
-        cmd: |
-          oc project ${PROJECT}
-          oc import-image openshift/java --confirm          
-    - name: Execute oc commands
+    - name: Maven
       run: |
-        hasBuilds=$(oc get bc ${APPNAME} --no-headers)
-        [[ -z $hasBuilds ]] && oc new-app ${GITHUB_WORKSPACE} --image-stream=java --name ${APP_NAME} || oc start-build ${APP_NAME} --from-dir . --follow
-        
+        cd ${GITHUB_WORKSPACE}
+        mvn package
+    - name: Lucas Test Build Action
+      uses: lstocchi/buildah-action@0.0.1
+      with:
+        new-image-name: test2
+        base-image: docker.io/fabric8/java-alpine-openjdk11-jre
+        content: ${GITHUB_WORKSPACE}/target/spring-petclinic-2.3.0.BUILD-SNAPSHOT.jar
+        port: 8080
+        entrypoint: java    
+    - name: Check image created
+      run: |
+        buildah images
+
+    
