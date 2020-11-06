@@ -6,6 +6,7 @@ on: [push]
 env:
   PROJECT: demo-action
   APP_NAME: myapp
+  RUNNER_OS: linux
 
 jobs:
   build:
