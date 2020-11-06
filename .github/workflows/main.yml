@@ -22,7 +22,7 @@ jobs:
         cd ${GITHUB_WORKSPACE}
         mvn package
     - name: Lucas Test Build Action
-      uses: lstocchi/buildah-action@0.0.3
+      uses: lstocchi/buildah-action@0.0.4
       with:
         new-image-name: test2
         base-image: docker.io/fabric8/java-alpine-openjdk11-jre
