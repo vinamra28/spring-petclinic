@@ -31,5 +31,9 @@ jobs:
     - name: Check image created
       run: |
         buildah images
+    - name: Push to registry
+      run: |
+        podman push --creds ${{ secrets.QUAY_USERNAME }}:${{ secrets.QUAY_PASSWORD }} test2 ${{ secrets.QUAY_REPO }}/testaction
+        
 
     
