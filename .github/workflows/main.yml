@@ -64,4 +64,4 @@ jobs:
       - name: push images
         run: |
           docker login quay.io -u ${{ secrets.QUAY_USERNAME }} -p ${{ secrets.QUAY_PASSWORD }}
-          buildah --storage-driver=overlay push --tls-verify=false --no-cache --creds ${{ secrets.QUAY_USERNAME }}:${{ secrets.QUAY_PASSWORD }} docker://${{ secrets.QUAY_REPO }}/testaction
+          buildah --storage-driver=overlay push --tls-verify=false --creds ${{ secrets.QUAY_USERNAME }}:${{ secrets.QUAY_PASSWORD }} docker://${{ secrets.QUAY_REPO }}/testaction
