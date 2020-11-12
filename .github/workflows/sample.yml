@@ -25,7 +25,7 @@ jobs:
         uses: lstocchi/buildah-action@0.0.6
         with:
           new-image-name: test2
-          base-image: docker.io/fabric8/java-alpine-openjdk11-jre
+          base-image: docker.io/fabric8/java-alpine-openjdk8-jre
           content: target/spring-petclinic-2.3.0.BUILD-SNAPSHOT.jar
           entrypoint: |
             java    
