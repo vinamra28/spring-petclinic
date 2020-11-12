@@ -50,7 +50,7 @@ jobs:
         with:
           path_context: "."
           builder_image: "registry.access.redhat.com/openjdk/openjdk-11-rhel7"
-          image_name: test2
+          image_name: ${{ secrets.QUAY_REPO }}/test2
       - name: Check image created
         run: |
           docker images
@@ -64,5 +64,5 @@ jobs:
       - name: push images
         run: |
           docker login quay.io -u ${{ secrets.QUAY_USERNAME }} -p ${{ secrets.QUAY_PASSWORD }}
-          docker push test2 ${{ secrets.QUAY_REPO }}/testaction:v1
+          docker push ${{ secrets.QUAY_REPO }}/test2
           # buildah --storage-driver=overlay push --tls-verify=false --creds ${{ secrets.QUAY_USERNAME }}:${{ secrets.QUAY_PASSWORD }} docker://${{ secrets.QUAY_REPO }}/testaction
