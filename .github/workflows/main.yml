@@ -14,34 +14,50 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Maven
-      run: |
-        cd ${GITHUB_WORKSPACE}
-        mvn package
-    - name: Lucas Test Build Action
-      uses: lstocchi/buildah-action@0.0.6
-      with:
-        new-image-name: test2
-        base-image: docker.io/fabric8/java-alpine-openjdk11-jre
-        content: target/spring-petclinic-2.3.0.BUILD-SNAPSHOT.jar
-        entrypoint: |
-          java    
-          -jar
-          spring-petclinic-2.3.0.BUILD-SNAPSHOT.jar
-        port: 8080
-    - name: Check image created
-      run: |
-        buildah images
-    - name: Lucas Test Push To Quay Action
-      uses: lstocchi/push-to-quay-action@0.0.2
-      with:
-        image-to-push: test2
-        quay-registry: ${{ secrets.QUAY_REPO }}/testaction
-        username: ${{ secrets.QUAY_USERNAME }}
-        password: ${{ secrets.QUAY_PASSWORD }}
-        
+      # - name: Maven
+      #   run: |
+      #     cd ${GITHUB_WORKSPACE}
+      #     mvn package
+      # - name: Lucas Test Build Action
+      #   uses: lstocchi/buildah-action@0.0.6
+      #   with:
+      #     new-image-name: test2
+      #     base-image: docker.io/fabric8/java-alpine-openjdk11-jre
+      #     content: target/spring-petclinic-2.3.0.BUILD-SNAPSHOT.jar
+      #     entrypoint: |
+      #       java
+      #       -jar
+      #       spring-petclinic-2.3.0.BUILD-SNAPSHOT.jar
+      #     port: 8080
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+        with:
+          version: latest
 
-    
+        # Checkout spring petclinic repository
+      - name: Checkout
+        uses: actions/checkout@v2
+        env:
+          DEFAULT_BRANCH: main
+
+        # Setup S2i and Build container image
+      - name: Setup and Build
+        uses: Divyansh42/s2i-build@v0.0.1
+        with:
+          path_context: "."
+          builder_image: "registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift"
+          image_name: test2
+      - name: Check image created
+        run: |
+          buildah images
+      - name: Lucas Test Push To Quay Action
+        uses: lstocchi/push-to-quay-action@0.0.2
+        with:
+          image-to-push: test2
+          quay-registry: ${{ secrets.QUAY_REPO }}/testaction
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_PASSWORD }}
