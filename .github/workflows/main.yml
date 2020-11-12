@@ -53,7 +53,7 @@ jobs:
           image_name: test2
       - name: Check image created
         run: |
-          buildah images
+          docker images
       # - name: Lucas Test Push To Quay Action
       #   uses: lstocchi/push-to-quay-action@0.0.2
       #   with:
@@ -64,4 +64,5 @@ jobs:
       - name: push images
         run: |
           docker login quay.io -u ${{ secrets.QUAY_USERNAME }} -p ${{ secrets.QUAY_PASSWORD }}
-          buildah --storage-driver=overlay push --tls-verify=false --creds ${{ secrets.QUAY_USERNAME }}:${{ secrets.QUAY_PASSWORD }} docker://${{ secrets.QUAY_REPO }}/testaction
+          docker push test2 ${{ secrets.QUAY_REPO }}/testaction:v1
+          # buildah --storage-driver=overlay push --tls-verify=false --creds ${{ secrets.QUAY_USERNAME }}:${{ secrets.QUAY_PASSWORD }} docker://${{ secrets.QUAY_REPO }}/testaction
